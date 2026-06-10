@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, type PointerEvent } from 'react';
 import { renderBoard, type BoardColors } from '../lib/game/renderer';
 import type { Direction, GameState } from '../lib/game/types';
 
@@ -7,6 +7,13 @@ interface GameBoardProps {
   mode: 'light' | 'dark';
   onDirection: (direction: Direction) => void;
 }
+
+interface SwipePoint {
+  x: number;
+  y: number;
+}
+
+const SWIPE_THRESHOLD_PX = 24;
 
 const keyDirections: Partial<Record<string, Direction>> = {
   ArrowUp: 'up',
@@ -25,6 +32,7 @@ const keyDirections: Partial<Record<string, Direction>> = {
 
 export function GameBoard({ state, mode, onDirection }: GameBoardProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const swipeStartRef = useRef<SwipePoint | null>(null);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -75,14 +83,60 @@ export function GameBoard({ state, mode, onDirection }: GameBoardProps) {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [onDirection]);
 
+  const handlePointerDown = (event: PointerEvent<HTMLCanvasElement>) => {
+    swipeStartRef.current = { x: event.clientX, y: event.clientY };
+    event.currentTarget.setPointerCapture(event.pointerId);
+  };
+
+  const handlePointerUp = (event: PointerEvent<HTMLCanvasElement>) => {
+    const start = swipeStartRef.current;
+    swipeStartRef.current = null;
+    if (event.currentTarget.hasPointerCapture(event.pointerId)) {
+      event.currentTarget.releasePointerCapture(event.pointerId);
+    }
+
+    if (start === null) {
+      return;
+    }
+
+    const direction = getSwipeDirection(start, { x: event.clientX, y: event.clientY });
+    if (direction !== null) {
+      onDirection(direction);
+    }
+  };
+
+  const handlePointerCancel = () => {
+    swipeStartRef.current = null;
+  };
+
   return (
     <canvas
       ref={canvasRef}
       aria-label="Snake game board"
       data-mode={mode}
-      className="aspect-square w-full rounded-md border border-[var(--color-grid)] bg-[var(--color-surface)]"
+      className="aspect-square w-full touch-none rounded-md border border-[var(--color-grid)] bg-[var(--color-surface)]"
+      onPointerCancel={handlePointerCancel}
+      onPointerDown={handlePointerDown}
+      onPointerUp={handlePointerUp}
     />
   );
+}
+
+function getSwipeDirection(start: SwipePoint, end: SwipePoint): Direction | null {
+  const deltaX = end.x - start.x;
+  const deltaY = end.y - start.y;
+  const absoluteX = Math.abs(deltaX);
+  const absoluteY = Math.abs(deltaY);
+
+  if (Math.max(absoluteX, absoluteY) < SWIPE_THRESHOLD_PX) {
+    return null;
+  }
+
+  if (absoluteX > absoluteY) {
+    return deltaX > 0 ? 'right' : 'left';
+  }
+
+  return deltaY > 0 ? 'down' : 'up';
 }
 
 function readBoardColors(element: HTMLElement): BoardColors {

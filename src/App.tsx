@@ -89,7 +89,7 @@ function BoardArea({
 }) {
   return (
     <div className={`flex min-w-0 flex-col items-center gap-3 ${className}`}>
-      <div className="relative w-full max-w-[min(100%,calc(100dvh-17rem))] sm:max-w-[min(100%,calc(100dvh-14rem))] lg:max-w-[min(100%,calc(100dvh-9rem))]">
+      <div className="relative w-full max-w-[min(100%,calc(100dvh-15rem))] sm:max-w-[min(100%,calc(100dvh-13rem))] lg:max-w-[min(100%,calc(100dvh-9rem))]">
         <GameBoard mode={mode} state={state} onDirection={onDirection} />
         <StatusOverlay phase={state.phase} />
       </div>

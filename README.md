@@ -2,6 +2,10 @@
 
 A modern minimal Snake game built as a responsive single-page app for desktop web and H5 mobile screens.
 
+## Live Demo
+
+GitHub Pages: https://borgesme.github.io/snake-game-web/
+
 ## Screenshots
 
 ### Desktop
@@ -61,6 +65,17 @@ Run tests:
 
 ```powershell
 pnpm test
+```
+
+## GitHub Pages Deployment
+
+The single-page app is published by GitHub Actions through `.github/workflows/deploy-pages.yml`.
+Every push to `main` runs tests, builds the app with `BASE_PATH=/snake-game-web/`, uploads `dist`, and deploys it to GitHub Pages.
+
+Build locally with the same base path:
+
+```powershell
+$env:BASE_PATH='/snake-game-web/'; pnpm build; Remove-Item Env:BASE_PATH
 ```
 
 ## Project Structure

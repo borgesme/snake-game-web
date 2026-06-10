@@ -41,7 +41,7 @@ export function GameBoard({ state, mode, onDirection }: GameBoardProps) {
         canvas.height = width;
       }
 
-      renderBoard(canvas, state, readBoardColors());
+      renderBoard(canvas, state, readBoardColors(canvas));
     };
 
     draw();
@@ -85,8 +85,8 @@ export function GameBoard({ state, mode, onDirection }: GameBoardProps) {
   );
 }
 
-function readBoardColors(): BoardColors {
-  const styles = getComputedStyle(document.documentElement);
+function readBoardColors(element: HTMLElement): BoardColors {
+  const styles = getComputedStyle(element);
 
   return {
     background: cssVariable(styles, '--color-surface', '#ffffff'),

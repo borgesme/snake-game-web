@@ -106,6 +106,10 @@ export function useSnakeGame(): UseSnakeGameResult {
   const requestDirection = useCallback((direction: Direction) => {
     const current = stateRef.current;
     const nextDirection = getNextDirection(current.direction, direction);
+    if (direction !== current.direction && nextDirection === current.direction) {
+      return;
+    }
+
     const nextState = { ...current, nextDirection };
     requestedDirectionRef.current = nextDirection;
     commitState(nextState);

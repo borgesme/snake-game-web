@@ -15,7 +15,7 @@ interface ControlPanelProps {
 }
 
 const buttonClass =
-  'h-10 min-w-24 rounded-md border border-[var(--color-grid)] px-3 text-sm font-medium whitespace-nowrap transition disabled:cursor-not-allowed disabled:opacity-45';
+  'flex h-10 w-full min-w-0 items-center justify-center overflow-hidden rounded-md border border-[var(--color-grid)] px-3 text-sm font-medium whitespace-nowrap text-ellipsis transition disabled:cursor-not-allowed disabled:opacity-45';
 
 const primaryButtonClass = `${buttonClass} bg-[var(--color-primary)] text-[var(--color-bg)] border-transparent hover:bg-[var(--color-primary-strong)]`;
 const quietButtonClass = `${buttonClass} bg-[var(--color-surface)] text-[var(--color-text)] hover:bg-[var(--color-surface-muted)]`;
@@ -79,7 +79,7 @@ export function ControlPanel({
         </div>
       </div>
 
-      <div className="mt-3 grid grid-cols-2 gap-2 sm:grid-cols-4">
+      <div className="mt-3 grid grid-cols-2 gap-2">
         <button
           className={primaryButtonClass}
           disabled={phase !== 'ready'}

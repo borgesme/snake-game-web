@@ -34,10 +34,9 @@ export default function App() {
         <GameHeader difficulty={difficulty} state={game.state} />
 
         <section className="grid flex-1 gap-4 lg:grid-cols-[minmax(0,1fr)_320px] lg:items-start">
-          <BoardArea mode={mode} state={game.state} onDirection={game.requestDirection} />
-
           <SidePanel
             bestScore={bestScore}
+            className="order-1 lg:order-2"
             difficulty={difficulty}
             mode={mode}
             obstaclesEnabled={game.obstaclesEnabled}
@@ -50,6 +49,13 @@ export default function App() {
             onRestart={game.restart}
             onResume={game.resume}
             onStart={game.start}
+          />
+
+          <BoardArea
+            className="order-2 lg:order-1"
+            mode={mode}
+            state={game.state}
+            onDirection={game.requestDirection}
           />
         </section>
       </div>
@@ -71,17 +77,19 @@ function GameHeader({ difficulty, state }: { difficulty: Difficulty; state: Game
 }
 
 function BoardArea({
+  className = '',
   mode,
   state,
   onDirection,
 }: {
+  className?: string;
   mode: ThemeMode;
   state: GameState;
   onDirection: (direction: Direction) => void;
 }) {
   return (
-    <div className="flex min-w-0 flex-col items-center gap-3">
-      <div className="relative w-full max-w-[min(100%,calc(100dvh-15rem))] sm:max-w-[min(100%,calc(100dvh-13rem))] lg:max-w-[min(100%,calc(100dvh-9rem))]">
+    <div className={`flex min-w-0 flex-col items-center gap-3 ${className}`}>
+      <div className="relative w-full max-w-[min(100%,calc(100dvh-17rem))] sm:max-w-[min(100%,calc(100dvh-14rem))] lg:max-w-[min(100%,calc(100dvh-9rem))]">
         <GameBoard mode={mode} state={state} onDirection={onDirection} />
         <StatusOverlay phase={state.phase} />
       </div>
@@ -93,6 +101,7 @@ function BoardArea({
 
 interface SidePanelProps {
   bestScore: number;
+  className?: string;
   difficulty: Difficulty;
   mode: ThemeMode;
   obstaclesEnabled: boolean;
@@ -109,6 +118,7 @@ interface SidePanelProps {
 
 function SidePanel({
   bestScore,
+  className = '',
   difficulty,
   mode,
   obstaclesEnabled,
@@ -123,7 +133,7 @@ function SidePanel({
   onStart,
 }: SidePanelProps) {
   return (
-    <aside className="flex min-w-0 flex-col gap-3">
+    <aside className={`flex min-w-0 flex-col gap-3 ${className}`}>
       <ScorePanel bestScore={bestScore} score={score} />
       <ControlPanel
         difficulty={difficulty}

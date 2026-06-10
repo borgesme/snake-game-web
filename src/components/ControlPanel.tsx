@@ -41,7 +41,7 @@ export function ControlPanel({
       aria-label="Game controls"
       className="w-full rounded-md border border-[var(--color-grid)] bg-[var(--color-surface)] p-3"
     >
-      <div className="grid gap-3 sm:grid-cols-2">
+      <div className="grid gap-3">
         <label className="flex min-w-0 flex-col gap-1 text-sm text-[var(--color-text-muted)]">
           Difficulty
           <select
@@ -56,7 +56,7 @@ export function ControlPanel({
           </select>
         </label>
 
-        <div className="grid grid-cols-2 gap-2">
+        <div className="grid grid-cols-[minmax(0,1fr)_minmax(0,1fr)] gap-2">
           <label className="flex h-10 items-center gap-2 rounded-md border border-[var(--color-grid)] px-3 text-sm text-[var(--color-text)]">
             <input
               className="size-4 shrink-0 accent-[var(--color-primary)]"

@@ -10,6 +10,7 @@ const labels: Record<Exclude<GamePhase, 'running'>, string> = {
   gameOver: 'Game Over',
 };
 
+/** Parent board wrapper must be positioned so this absolute overlay covers it. */
 export function StatusOverlay({ phase }: StatusOverlayProps) {
   if (phase === 'running') {
     return null;

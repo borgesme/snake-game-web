@@ -17,7 +17,7 @@ interface ControlPanelProps {
 const buttonClass =
   'h-10 min-w-24 rounded-md border border-[var(--color-grid)] px-3 text-sm font-medium whitespace-nowrap transition disabled:cursor-not-allowed disabled:opacity-45';
 
-const primaryButtonClass = `${buttonClass} bg-[var(--color-primary)] text-white border-transparent hover:bg-[var(--color-primary-strong)]`;
+const primaryButtonClass = `${buttonClass} bg-[var(--color-primary)] text-[var(--color-bg)] border-transparent hover:bg-[var(--color-primary-strong)]`;
 const quietButtonClass = `${buttonClass} bg-[var(--color-surface)] text-[var(--color-text)] hover:bg-[var(--color-surface-muted)]`;
 
 export function ControlPanel({

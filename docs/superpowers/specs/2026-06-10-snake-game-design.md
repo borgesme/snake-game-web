@@ -2,7 +2,7 @@
 
 ## Goal
 
-Build a modern minimal single-page Snake game that works on desktop web and H5 mobile screens. The game must use Vite, React, TypeScript, Canvas rendering, Tailwind CSS v4, and a lightweight store for difficulty, theme, and score state.
+Build a modern minimal single-page Snake game that works on desktop web and H5 mobile screens. The game must use Vite 8, React, TypeScript, Canvas rendering, Tailwind CSS v4, and a lightweight store for difficulty, theme, and score state.
 
 ## Confirmed Scope
 

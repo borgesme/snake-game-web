@@ -33,10 +33,23 @@ export default function App() {
       <div className="mx-auto flex min-h-dvh max-w-6xl flex-col gap-4 px-3 py-4 sm:px-4 lg:px-6 lg:py-6">
         <GameHeader difficulty={difficulty} state={game.state} />
 
+        <MobileActionBar
+          phase={game.state.phase}
+          onPause={game.pause}
+          onRestart={game.restart}
+          onResume={game.resume}
+          onStart={game.start}
+        />
+
         <section className="grid flex-1 gap-4 lg:grid-cols-[minmax(0,1fr)_320px] lg:items-start">
+          <BoardArea
+            mode={mode}
+            state={game.state}
+            onDirection={game.requestDirection}
+          />
+
           <SidePanel
             bestScore={bestScore}
-            className="order-1 lg:order-2"
             difficulty={difficulty}
             mode={mode}
             obstaclesEnabled={game.obstaclesEnabled}
@@ -49,13 +62,6 @@ export default function App() {
             onRestart={game.restart}
             onResume={game.resume}
             onStart={game.start}
-          />
-
-          <BoardArea
-            className="order-2 lg:order-1"
-            mode={mode}
-            state={game.state}
-            onDirection={game.requestDirection}
           />
         </section>
       </div>
@@ -73,6 +79,60 @@ function GameHeader({ difficulty, state }: { difficulty: Difficulty; state: Game
         </p>
       </div>
     </header>
+  );
+}
+
+interface MobileActionBarProps {
+  phase: GameState['phase'];
+  onPause: () => void;
+  onRestart: () => void;
+  onResume: () => void;
+  onStart: () => void;
+}
+
+const mobileActionButtonClass =
+  'flex h-10 min-w-0 items-center justify-center overflow-hidden rounded-md border border-[var(--color-grid)] px-3 text-sm font-medium whitespace-nowrap text-ellipsis transition disabled:cursor-not-allowed disabled:opacity-45';
+
+const mobilePrimaryButtonClass = `${mobileActionButtonClass} bg-[var(--color-primary)] text-[var(--color-bg)] border-transparent hover:bg-[var(--color-primary-strong)]`;
+const mobileQuietButtonClass = `${mobileActionButtonClass} bg-[var(--color-surface)] text-[var(--color-text)] hover:bg-[var(--color-surface-muted)]`;
+
+function MobileActionBar({
+  phase,
+  onPause,
+  onRestart,
+  onResume,
+  onStart,
+}: MobileActionBarProps) {
+  return (
+    <section aria-label="Quick game actions" className="grid grid-cols-2 gap-2 lg:hidden">
+      <button
+        className={mobilePrimaryButtonClass}
+        disabled={phase !== 'ready'}
+        type="button"
+        onClick={onStart}
+      >
+        Start
+      </button>
+      <button
+        className={mobileQuietButtonClass}
+        disabled={phase !== 'running'}
+        type="button"
+        onClick={onPause}
+      >
+        Pause
+      </button>
+      <button
+        className={mobileQuietButtonClass}
+        disabled={phase !== 'paused'}
+        type="button"
+        onClick={onResume}
+      >
+        Resume
+      </button>
+      <button className={mobileQuietButtonClass} type="button" onClick={onRestart}>
+        Restart
+      </button>
+    </section>
   );
 }
 

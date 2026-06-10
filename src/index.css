@@ -45,3 +45,8 @@ button,
 select {
   font: inherit;
 }
+
+:where(button, select, input):disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}

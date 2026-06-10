@@ -337,6 +337,7 @@ export type GameSettings = {
 export type GameState = {
   phase: GamePhase;
   boardSize: number;
+  difficulty: Difficulty;
   snake: Point[];
   direction: Direction;
   nextDirection: Direction;
@@ -414,7 +415,7 @@ describe('snake engine', () => {
       food: { x: 15, y: 15 },
     };
 
-    const result = tick(state, 'right', 'easy');
+    const result = tick(state, 'right');
 
     expect(result.ateFood).toBe(false);
     expect(result.scoreDelta).toBe(0);
@@ -429,7 +430,7 @@ describe('snake engine', () => {
       food: { x: 9, y: 10 },
     };
 
-    const result = tick(state, 'right', 'hard');
+    const result = tick(state, 'right');
 
     expect(result.ateFood).toBe(true);
     expect(result.scoreDelta).toBe(20);
@@ -447,7 +448,7 @@ describe('snake engine', () => {
       food: { x: 5, y: 5 },
     };
 
-    const result = tick(state, 'right', 'easy');
+    const result = tick(state, 'right');
 
     expect(result.state.phase).toBe('gameOver');
   });
@@ -467,7 +468,7 @@ describe('snake engine', () => {
       food: { x: 10, y: 10 },
     };
 
-    const result = tick(state, 'down', 'easy');
+    const result = tick(state, 'down');
 
     expect(result.state.phase).toBe('gameOver');
   });
@@ -480,7 +481,7 @@ describe('snake engine', () => {
       food: { x: 15, y: 15 },
     };
 
-    const result = tick(state, 'right', 'easy');
+    const result = tick(state, 'right');
 
     expect(result.state.phase).toBe('gameOver');
   });
@@ -494,7 +495,7 @@ describe('snake engine', () => {
       food: { x: 9, y: 10 },
     };
 
-    const result = tick(state, 'right', 'easy');
+    const result = tick(state, 'right');
 
     expect(result.state.tickMs).toBe(60);
   });
@@ -523,7 +524,6 @@ export function hasPoint(_points: Point[], _point: Point): boolean {
 export function tick(
   _state: GameState,
   _requestedDirection: Direction,
-  _difficulty: GameSettings['difficulty'],
 ): TickResult {
   throw new Error('tick is not implemented');
 }
@@ -546,6 +546,8 @@ Expected: FAIL with implementation errors from `engine.ts`.
 **Files:**
 - Modify: `src/lib/game/engine.ts`
 - Test: `src/lib/game/engine.test.ts`
+
+**Plan update from code review:** `GameState` stores the run's `difficulty`, and `tick` reads scoring/speed settings from `state.difficulty` instead of accepting difficulty as a separate argument. This prevents running-game settings from drifting if the store changes later.
 
 - [ ] **Step 1: Implement engine**
 
@@ -586,6 +588,7 @@ export function createInitialState(settings: GameSettings): GameState {
   return {
     phase: 'ready',
     boardSize: BOARD_SIZE,
+    difficulty: settings.difficulty,
     snake,
     direction: 'right',
     nextDirection: 'right',
@@ -607,7 +610,6 @@ export function hasPoint(points: Point[], point: Point): boolean {
 export function tick(
   state: GameState,
   requestedDirection: Direction,
-  difficulty: Difficulty,
 ): TickResult {
   if (state.phase !== 'running') {
     return { state, ateFood: false, scoreDelta: 0 };
@@ -638,9 +640,9 @@ export function tick(
   }
 
   const foodsEaten = eatsFood ? state.foodsEaten + 1 : state.foodsEaten;
-  const tickMs = calculateTickMs(state.tickMs, foodsEaten, difficulty, eatsFood);
+  const tickMs = calculateTickMs(state.tickMs, foodsEaten, state.difficulty, eatsFood);
   const scoreDelta = eatsFood
-    ? Math.round(FOOD_SCORE * DIFFICULTY_CONFIG[difficulty].scoreMultiplier)
+    ? Math.round(FOOD_SCORE * DIFFICULTY_CONFIG[state.difficulty].scoreMultiplier)
     : 0;
 
   return {
@@ -1038,7 +1040,7 @@ export function useSnakeGame(): SnakeController {
 
     const timer = window.setTimeout(() => {
       setState((current) => {
-        const result = tick(current, requestedDirection.current, difficulty);
+        const result = tick(current, requestedDirection.current);
         if (result.scoreDelta > 0) {
           addScore(result.scoreDelta);
         }
@@ -1047,7 +1049,7 @@ export function useSnakeGame(): SnakeController {
     }, state.tickMs);
 
     return () => window.clearTimeout(timer);
-  }, [addScore, difficulty, state.phase, state.tickMs, state.snake]);
+  }, [addScore, state.phase, state.tickMs, state.snake]);
 
   useEffect(() => {
     if (state.phase === 'ready') {
@@ -1563,4 +1565,4 @@ git commit -m "feat: 完成贪吃蛇游戏验证"
 
 - Spec coverage: SPA, Modern Minimal style, desktop keyboard, H5 touch, difficulty, speed progression, obstacle mode, score persistence, Tailwind CSS v4, light/dark mode, multi-theme structure, store-managed difficulty/theme/score, tests, and build verification are all covered.
 - Red-flag scan: no unresolved implementation gaps remain in this plan. The only temporary throwing code is an explicit failing-test step before engine implementation.
-- Type consistency: `Difficulty`, `ThemeMode`, `GameState`, `Direction`, and store method names are consistent across tasks.
+- Type consistency: `Difficulty`, `ThemeMode`, `GameState`, `Direction`, and store method names are consistent across tasks. `tick` reads difficulty from `GameState.difficulty`.

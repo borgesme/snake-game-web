@@ -31,6 +31,14 @@ describe('gameStore', () => {
     expect(useGameStore.getState().themeId).toBe('minimal');
   });
 
+  it('hydrates best score from localStorage when the store loads', async () => {
+    window.localStorage.setItem(BEST_SCORE_KEY, '42');
+
+    const { useGameStore } = await loadStore();
+
+    expect(useGameStore.getState().bestScore).toBe(42);
+  });
+
   it('increments score and persists best score', async () => {
     const { useGameStore } = await loadStore();
 
@@ -52,6 +60,24 @@ describe('gameStore', () => {
     expect(useGameStore.getState().score).toBe(5);
     expect(useGameStore.getState().bestScore).toBe(20);
     expect(window.localStorage.getItem(BEST_SCORE_KEY)).toBe('20');
+  });
+
+  it('resets settings and score while preserving best score', async () => {
+    window.localStorage.setItem(BEST_SCORE_KEY, '42');
+    const { useGameStore } = await loadStore();
+
+    useGameStore.getState().setDifficulty('hard');
+    useGameStore.getState().setMode('dark');
+    useGameStore.getState().setThemeId('minimal');
+    useGameStore.getState().addScore(50);
+    useGameStore.getState().resetAll();
+
+    expect(useGameStore.getState().difficulty).toBe('normal');
+    expect(useGameStore.getState().mode).toBe('light');
+    expect(useGameStore.getState().themeId).toBe('minimal');
+    expect(useGameStore.getState().score).toBe(0);
+    expect(useGameStore.getState().bestScore).toBe(50);
+    expect(window.localStorage.getItem(BEST_SCORE_KEY)).toBe('50');
   });
 
   it('does not throw when localStorage is unavailable and keeps in-memory score state', async () => {

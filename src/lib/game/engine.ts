@@ -26,13 +26,18 @@ export function createInitialState(settings: GameSettings): GameState {
   const config = DIFFICULTY_CONFIG[settings.difficulty];
   const snake = clonePoints(START_SNAKE);
   const obstacles = settings.obstaclesEnabled
-    ? createObstacles(config.obstacleCount, snake)
+    ? createObstacles(config.obstacleCount, snake, BOARD_SIZE)
     : [];
-  const food = findFreeCell([...snake, ...obstacles]);
+  const food = findFreeCell([...snake, ...obstacles], BOARD_SIZE);
+
+  if (food === null) {
+    throw new Error('No free cell available for initial food');
+  }
 
   return {
     phase: 'ready',
     boardSize: BOARD_SIZE,
+    difficulty: settings.difficulty,
     snake,
     direction: 'right',
     nextDirection: 'right',
@@ -54,12 +59,12 @@ export function hasPoint(points: Point[], point: Point): boolean {
 export function tick(
   state: GameState,
   requestedDirection: Direction,
-  difficulty: Difficulty,
 ): TickResult {
   if (state.phase !== 'running') {
     return { state, ateFood: false, scoreDelta: 0 };
   }
 
+  const config = DIFFICULTY_CONFIG[state.difficulty];
   const direction = getNextDirection(state.direction, requestedDirection);
   const delta = DIRECTION_DELTA[direction];
   const nextHead = {
@@ -92,25 +97,25 @@ export function tick(
   }
 
   const foodsEaten = ateFood ? state.foodsEaten + 1 : state.foodsEaten;
-  const tickMs = getUpdatedTickMs(state.tickMs, foodsEaten, ateFood, difficulty);
-  const food = ateFood
-    ? findFreeCell([...snake, ...state.obstacles], state.food)
+  const tickMs = getUpdatedTickMs(state.tickMs, foodsEaten, ateFood, state.difficulty);
+  const nextFood = ateFood
+    ? findFreeCell([...snake, ...state.obstacles], state.boardSize, state.food)
     : state.food;
+  const phase = nextFood === null ? 'gameOver' : state.phase;
 
   return {
     state: {
       ...state,
+      phase,
       snake,
       direction,
       nextDirection: direction,
-      food,
+      food: nextFood ?? state.food,
       foodsEaten,
       tickMs,
     },
     ateFood,
-    scoreDelta: ateFood
-      ? Math.round(FOOD_SCORE * DIFFICULTY_CONFIG[difficulty].scoreMultiplier)
-      : 0,
+    scoreDelta: ateFood ? Math.round(FOOD_SCORE * config.scoreMultiplier) : 0,
   };
 }
 
@@ -122,19 +127,24 @@ function pointsEqual(left: Point, right: Point): boolean {
   return left.x === right.x && left.y === right.y;
 }
 
-function createObstacles(count: number, snake: Point[]): Point[] {
+function createObstacles(count: number, snake: Point[], boardSize: number): Point[] {
   const obstacles: Point[] = [];
 
   for (let index = 0; index < count; index += 1) {
-    obstacles.push(findFreeCell([...snake, ...obstacles]));
+    const obstacle = findFreeCell([...snake, ...obstacles], boardSize);
+    if (obstacle === null) {
+      break;
+    }
+
+    obstacles.push(obstacle);
   }
 
   return obstacles;
 }
 
-function findFreeCell(blocked: Point[], previousFood?: Point): Point {
-  for (let y = 0; y < BOARD_SIZE; y += 1) {
-    for (let x = 0; x < BOARD_SIZE; x += 1) {
+function findFreeCell(blocked: Point[], boardSize: number, previousFood?: Point): Point | null {
+  for (let y = 0; y < boardSize; y += 1) {
+    for (let x = 0; x < boardSize; x += 1) {
       const candidate = { x, y };
       if (!hasPoint(blocked, candidate) && !isPreviousFood(candidate, previousFood)) {
         return candidate;
@@ -142,7 +152,7 @@ function findFreeCell(blocked: Point[], previousFood?: Point): Point {
     }
   }
 
-  throw new Error('No free cell available');
+  return null;
 }
 
 function isPreviousFood(candidate: Point, previousFood?: Point): boolean {

@@ -24,6 +24,7 @@ export interface GameSettings {
 export interface GameState {
   phase: GamePhase;
   boardSize: number;
+  difficulty: Difficulty;
   snake: Point[];
   direction: Direction;
   nextDirection: Direction;

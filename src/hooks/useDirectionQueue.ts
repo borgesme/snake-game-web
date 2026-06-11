@@ -14,16 +14,19 @@ export function useDirectionQueue({ stateRef, commitState }: UseDirectionQueueOp
     requestedDirectionRef.current = 'right';
   }, []);
 
-  const requestDirection = useCallback((direction: Direction) => {
-    const current = stateRef.current;
-    const nextDirection = getNextDirection(current.direction, direction);
-    if (direction !== current.direction && nextDirection === current.direction) {
-      return;
-    }
+  const requestDirection = useCallback(
+    (direction: Direction) => {
+      const current = stateRef.current;
+      const nextDirection = getNextDirection(current.direction, direction);
+      if (direction !== current.direction && nextDirection === current.direction) {
+        return;
+      }
 
-    requestedDirectionRef.current = nextDirection;
-    commitState({ ...current, nextDirection });
-  }, [commitState, stateRef]);
+      requestedDirectionRef.current = nextDirection;
+      commitState({ ...current, nextDirection });
+    },
+    [commitState, stateRef],
+  );
 
   return { requestedDirectionRef, requestDirection, resetDirection };
 }

@@ -108,11 +108,7 @@ describe('tick', () => {
   });
 
   it('uses an injected random source when placing the next food after eating', () => {
-    const result = tick(
-      runningState({ food: { x: 9, y: 10 } }),
-      'right',
-      () => 0.999,
-    );
+    const result = tick(runningState({ food: { x: 9, y: 10 } }), 'right', () => 0.999);
 
     expect(result.ateFood).toBe(true);
     expect(result.state.food).toEqual({ x: 19, y: 19 });

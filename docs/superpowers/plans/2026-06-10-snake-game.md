@@ -43,6 +43,7 @@
 ### Task 1: Scaffold Vite React TypeScript App
 
 **Files:**
+
 - Create: `package.json`
 - Create: `index.html`
 - Create: `vite.config.ts`
@@ -175,10 +176,7 @@ Create `tsconfig.json`:
 ```json
 {
   "files": [],
-  "references": [
-    { "path": "./tsconfig.app.json" },
-    { "path": "./tsconfig.node.json" }
-  ]
+  "references": [{ "path": "./tsconfig.app.json" }, { "path": "./tsconfig.node.json" }]
 }
 ```
 
@@ -226,7 +224,7 @@ Create `tsconfig.node.json`:
 Create `src/index.css`:
 
 ```css
-@import "tailwindcss";
+@import 'tailwindcss';
 
 :root {
   --color-bg: #f8fafc;
@@ -242,7 +240,7 @@ Create `src/index.css`:
   --color-grid: #dbe4ee;
 }
 
-[data-mode="dark"] {
+[data-mode='dark'] {
   --color-bg: #111827;
   --color-surface: #1f2937;
   --color-surface-muted: #374151;
@@ -265,7 +263,12 @@ body,
 body {
   margin: 0;
   font-family:
-    Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    Inter,
+    ui-sans-serif,
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    'Segoe UI',
     sans-serif;
 }
 
@@ -303,6 +306,7 @@ git commit -m "feat: 初始化贪吃蛇 SPA 项目"
 ### Task 2: Add Game Types And Engine Tests
 
 **Files:**
+
 - Create: `src/lib/game/types.ts`
 - Create: `src/lib/game/config.ts`
 - Create: `src/lib/game/engine.ts`
@@ -383,12 +387,7 @@ Create `src/lib/game/engine.test.ts`:
 
 ```ts
 import { describe, expect, it } from 'vitest';
-import {
-  createInitialState,
-  getNextDirection,
-  hasPoint,
-  tick,
-} from './engine';
+import { createInitialState, getNextDirection, hasPoint, tick } from './engine';
 import type { GameState } from './types';
 
 describe('snake engine', () => {
@@ -521,10 +520,7 @@ export function hasPoint(_points: Point[], _point: Point): boolean {
   throw new Error('hasPoint is not implemented');
 }
 
-export function tick(
-  _state: GameState,
-  _requestedDirection: Direction,
-): TickResult {
+export function tick(_state: GameState, _requestedDirection: Direction): TickResult {
   throw new Error('tick is not implemented');
 }
 ```
@@ -544,6 +540,7 @@ Expected: FAIL with implementation errors from `engine.ts`.
 ### Task 3: Implement Pure Snake Engine
 
 **Files:**
+
 - Modify: `src/lib/game/engine.ts`
 - Test: `src/lib/game/engine.test.ts`
 
@@ -581,9 +578,7 @@ const REVERSE: Record<Direction, Direction> = {
 export function createInitialState(settings: GameSettings): GameState {
   const config = DIFFICULTY_CONFIG[settings.difficulty];
   const snake = START_SNAKE.map((point) => ({ ...point }));
-  const obstacles = settings.obstaclesEnabled
-    ? createObstacles(config.obstacleCount, snake)
-    : [];
+  const obstacles = settings.obstaclesEnabled ? createObstacles(config.obstacleCount, snake) : [];
 
   return {
     phase: 'ready',
@@ -607,10 +602,7 @@ export function hasPoint(points: Point[], point: Point): boolean {
   return points.some((candidate) => candidate.x === point.x && candidate.y === point.y);
 }
 
-export function tick(
-  state: GameState,
-  requestedDirection: Direction,
-): TickResult {
+export function tick(state: GameState, requestedDirection: Direction): TickResult {
   if (state.phase !== 'running') {
     return { state, ateFood: false, scoreDelta: 0 };
   }
@@ -740,6 +732,7 @@ git commit -m "feat: 实现贪吃蛇核心规则"
 ### Task 4: Implement Store With Tests
 
 **Files:**
+
 - Create: `src/store/gameStore.ts`
 - Create: `src/store/gameStore.test.ts`
 
@@ -882,6 +875,7 @@ git commit -m "feat: 添加游戏状态 store"
 ### Task 5: Add Canvas Renderer And Game Controller Hook
 
 **Files:**
+
 - Create: `src/lib/game/renderer.ts`
 - Create: `src/hooks/useSnakeGame.ts`
 
@@ -1018,11 +1012,15 @@ export function useSnakeGame(): SnakeController {
   }, [difficulty, obstaclesEnabled, resetScore]);
 
   const pause = useCallback(() => {
-    setState((current) => (current.phase === 'running' ? { ...current, phase: 'paused' } : current));
+    setState((current) =>
+      current.phase === 'running' ? { ...current, phase: 'paused' } : current,
+    );
   }, []);
 
   const resume = useCallback(() => {
-    setState((current) => (current.phase === 'paused' ? { ...current, phase: 'running' } : current));
+    setState((current) =>
+      current.phase === 'paused' ? { ...current, phase: 'running' } : current,
+    );
   }, []);
 
   const requestDirection = useCallback((direction: Direction) => {
@@ -1093,6 +1091,7 @@ git commit -m "feat: 添加画布渲染和游戏控制器"
 ### Task 6: Build React UI Components
 
 **Files:**
+
 - Create: `src/components/GameBoard.tsx`
 - Create: `src/components/ControlPanel.tsx`
 - Create: `src/components/ScorePanel.tsx`
@@ -1247,16 +1246,30 @@ export function ControlPanel(props: ControlPanelProps) {
       </label>
 
       <div className="grid grid-cols-2 gap-2">
-        <button className="rounded-md bg-[var(--color-primary)] px-4 py-2 font-medium text-white" onClick={props.onStart}>
+        <button
+          className="rounded-md bg-[var(--color-primary)] px-4 py-2 font-medium text-white"
+          onClick={props.onStart}
+        >
           Start
         </button>
-        <button className="rounded-md border border-[var(--color-surface-muted)] px-4 py-2" onClick={props.onRestart}>
+        <button
+          className="rounded-md border border-[var(--color-surface-muted)] px-4 py-2"
+          onClick={props.onRestart}
+        >
           Restart
         </button>
-        <button className="rounded-md border border-[var(--color-surface-muted)] px-4 py-2" onClick={props.onPause} disabled={!running}>
+        <button
+          className="rounded-md border border-[var(--color-surface-muted)] px-4 py-2"
+          onClick={props.onPause}
+          disabled={!running}
+        >
           Pause
         </button>
-        <button className="rounded-md border border-[var(--color-surface-muted)] px-4 py-2" onClick={props.onResume} disabled={!paused}>
+        <button
+          className="rounded-md border border-[var(--color-surface-muted)] px-4 py-2"
+          onClick={props.onResume}
+          disabled={!paused}
+        >
           Resume
         </button>
       </div>
@@ -1302,7 +1315,10 @@ type TouchControlsProps = {
 
 export function TouchControls({ onDirection }: TouchControlsProps) {
   return (
-    <div className="mx-auto grid w-44 grid-cols-3 gap-2 sm:hidden" aria-label="Touch direction controls">
+    <div
+      className="mx-auto grid w-44 grid-cols-3 gap-2 sm:hidden"
+      aria-label="Touch direction controls"
+    >
       <span />
       <TouchButton label="Up" onClick={() => onDirection('up')} />
       <span />
@@ -1378,6 +1394,7 @@ git commit -m "feat: 添加贪吃蛇界面组件"
 ### Task 7: Integrate SPA Layout And Theme
 
 **Files:**
+
 - Modify: `src/App.tsx`
 - Modify: `src/index.css`
 
@@ -1415,7 +1432,9 @@ export default function App() {
           <header className="flex items-end justify-between gap-4">
             <div>
               <h1 className="text-3xl font-semibold">Snake</h1>
-              <p className="text-sm text-[var(--color-text-muted)]">Modern minimal web and H5 snake game</p>
+              <p className="text-sm text-[var(--color-text-muted)]">
+                Modern minimal web and H5 snake game
+              </p>
             </div>
             <span className="rounded-full border border-[var(--color-surface-muted)] px-3 py-1 text-sm text-[var(--color-text-muted)]">
               {controller.state.phase}
@@ -1423,7 +1442,11 @@ export default function App() {
           </header>
 
           <div className="relative mx-auto w-full max-w-[min(86dvh,680px)]">
-            <GameBoard state={controller.state} mode={mode} onDirection={controller.requestDirection} />
+            <GameBoard
+              state={controller.state}
+              mode={mode}
+              onDirection={controller.requestDirection}
+            />
             <StatusOverlay phase={controller.state.phase} />
           </div>
 
@@ -1488,6 +1511,7 @@ git commit -m "feat: 集成贪吃蛇单页游戏"
 ### Task 8: Final Responsive Polish And Verification
 
 **Files:**
+
 - Modify: `src/components/TouchControls.tsx`
 - Modify: `src/components/ControlPanel.tsx`
 - Modify: `src/App.tsx`

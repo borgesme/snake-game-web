@@ -65,10 +65,10 @@ The engine prevents direct 180-degree direction reversal. Food generation exclud
 Difficulty controls initial speed, score multiplier, and obstacle count.
 
 | Difficulty | Initial Tick | Score Multiplier | Obstacles |
-| --- | ---: | ---: | ---: |
-| easy | 160 ms | 1x | 4 |
-| normal | 120 ms | 1.5x | 7 |
-| hard | 90 ms | 2x | 10 |
+| ---------- | -----------: | ---------------: | --------: |
+| easy       |       160 ms |               1x |         4 |
+| normal     |       120 ms |             1.5x |         7 |
+| hard       |        90 ms |               2x |        10 |
 
 Every 5 foods, the tick interval decreases by 8 ms until it reaches a floor of 60 ms. Eating food increases score by `10 * multiplier`.
 

@@ -73,7 +73,7 @@ export function useSnakeGame(): UseSnakeGameResult {
     }
 
     commitState({ ...current, phase: 'paused' });
-  }, [commitState]);
+  }, [commitState, stateRef]);
 
   const resume = useCallback(() => {
     const current = stateRef.current;
@@ -84,7 +84,7 @@ export function useSnakeGame(): UseSnakeGameResult {
     clearLoop();
     commitState({ ...current, phase: 'running' });
     restartLoop();
-  }, [clearLoop, commitState, restartLoop]);
+  }, [clearLoop, commitState, restartLoop, stateRef]);
 
   const restart = useCallback(() => {
     start();

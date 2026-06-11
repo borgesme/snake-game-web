@@ -45,11 +45,7 @@ export default function App() {
         />
 
         <section className="grid w-full min-w-0 flex-1 gap-4 lg:grid-cols-[minmax(0,1fr)_320px] lg:items-start">
-          <BoardArea
-            mode={mode}
-            state={game.state}
-            onDirection={game.requestDirection}
-          />
+          <BoardArea mode={mode} state={game.state} onDirection={game.requestDirection} />
 
           <SidePanel
             bestScore={bestScore}
@@ -101,13 +97,7 @@ const mobileActionButtonClass =
 const mobilePrimaryButtonClass = `${mobileActionButtonClass} bg-[var(--color-primary)] text-[var(--color-bg)] border-transparent hover:bg-[var(--color-primary-strong)]`;
 const mobileQuietButtonClass = `${mobileActionButtonClass} bg-[var(--color-surface)] text-[var(--color-text)] hover:bg-[var(--color-surface-muted)]`;
 
-function MobileActionBar({
-  phase,
-  onPause,
-  onRestart,
-  onResume,
-  onStart,
-}: MobileActionBarProps) {
+function MobileActionBar({ phase, onPause, onRestart, onResume, onStart }: MobileActionBarProps) {
   return (
     <section
       aria-label="Quick game actions"

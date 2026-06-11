@@ -81,11 +81,9 @@ describe('gameStore', () => {
   });
 
   it('does not throw when localStorage is unavailable and keeps in-memory score state', async () => {
-    const localStorageSpy = vi
-      .spyOn(window, 'localStorage', 'get')
-      .mockImplementation(() => {
-        throw new Error('localStorage unavailable');
-      });
+    const localStorageSpy = vi.spyOn(window, 'localStorage', 'get').mockImplementation(() => {
+      throw new Error('localStorage unavailable');
+    });
 
     const { useGameStore } = await loadStore();
 

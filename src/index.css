@@ -1,4 +1,4 @@
-@import "tailwindcss";
+@import 'tailwindcss';
 
 :root {
   --color-bg: #f8fafc;
@@ -14,7 +14,7 @@
   --color-grid: #dbe4ee;
 }
 
-[data-theme="arcade"] {
+[data-theme='arcade'] {
   --color-bg: #f4fbf6;
   --color-surface: #ffffff;
   --color-surface-muted: #d8f3dc;
@@ -28,7 +28,7 @@
   --color-grid: #b7e4c7;
 }
 
-[data-theme="contrast"] {
+[data-theme='contrast'] {
   --color-bg: #ffffff;
   --color-surface: #f4f4f5;
   --color-surface-muted: #d4d4d8;
@@ -42,7 +42,7 @@
   --color-grid: #a1a1aa;
 }
 
-[data-mode="dark"] {
+[data-mode='dark'] {
   --color-bg: #111827;
   --color-surface: #1f2937;
   --color-surface-muted: #374151;
@@ -56,7 +56,7 @@
   --color-grid: #334155;
 }
 
-[data-theme="arcade"][data-mode="dark"] {
+[data-theme='arcade'][data-mode='dark'] {
   --color-bg: #07140d;
   --color-surface: #102a1f;
   --color-surface-muted: #1b4332;
@@ -70,7 +70,7 @@
   --color-grid: #2d6a4f;
 }
 
-[data-theme="contrast"][data-mode="dark"] {
+[data-theme='contrast'][data-mode='dark'] {
   --color-bg: #000000;
   --color-surface: #18181b;
   --color-surface-muted: #3f3f46;
@@ -93,7 +93,12 @@ body,
 body {
   margin: 0;
   font-family:
-    Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    Inter,
+    ui-sans-serif,
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    'Segoe UI',
     sans-serif;
 }
 

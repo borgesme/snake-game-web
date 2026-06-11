@@ -21,6 +21,16 @@ describe('gameStore', () => {
     expect(useGameStore.getState().difficulty).toBe('hard');
   });
 
+  it('updates snake speed', async () => {
+    const { useGameStore } = await loadStore();
+
+    expect(useGameStore.getState().speed).toBe('slow');
+
+    useGameStore.getState().setSpeed('normal');
+
+    expect(useGameStore.getState().speed).toBe('normal');
+  });
+
   it('updates theme mode and theme id', async () => {
     const { useGameStore } = await loadStore();
 
@@ -67,12 +77,14 @@ describe('gameStore', () => {
     const { useGameStore } = await loadStore();
 
     useGameStore.getState().setDifficulty('hard');
+    useGameStore.getState().setSpeed('fast');
     useGameStore.getState().setMode('dark');
     useGameStore.getState().setThemeId('minimal');
     useGameStore.getState().addScore(50);
     useGameStore.getState().resetAll();
 
     expect(useGameStore.getState().difficulty).toBe('normal');
+    expect(useGameStore.getState().speed).toBe('slow');
     expect(useGameStore.getState().mode).toBe('light');
     expect(useGameStore.getState().themeId).toBe('minimal');
     expect(useGameStore.getState().score).toBe(0);

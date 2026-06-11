@@ -14,6 +14,7 @@ function runningState(overrides: Partial<GameState> = {}): GameState {
     food: { x: 12, y: 10 },
     obstacles: [],
     foodsEaten: 0,
+    speed: 'normal',
     tickMs: 120,
     ...overrides,
   };
@@ -48,9 +49,21 @@ describe('createInitialState', () => {
     expect(state.snake).toHaveLength(3);
     expect(state.direction).toBe('right');
     expect(state.nextDirection).toBe('right');
-    expect(state.tickMs).toBe(120);
+    expect(state.speed).toBe('slow');
+    expect(state.tickMs).toBe(220);
     expect(state.obstacles).toEqual([]);
     expect(hasPoint(state.snake, state.food)).toBe(false);
+  });
+
+  it('uses explicit speed settings for initial tick timing', () => {
+    const state = createInitialState({
+      difficulty: 'normal',
+      obstaclesEnabled: false,
+      speed: 'normal',
+    });
+
+    expect(state.speed).toBe('normal');
+    expect(state.tickMs).toBe(150);
   });
 
   it('generates difficulty-based obstacles only when enabled', () => {
@@ -156,20 +169,20 @@ describe('tick', () => {
 
   it('speeds up every five foods eaten and clamps to minimum speed', () => {
     const fifthFood = tick(
-      runningState({ food: { x: 9, y: 10 }, foodsEaten: 4, tickMs: 64 }),
+      runningState({ food: { x: 9, y: 10 }, foodsEaten: 4, tickMs: 74 }),
       'right',
     );
 
     expect(fifthFood.state.foodsEaten).toBe(5);
-    expect(fifthFood.state.tickMs).toBe(60);
+    expect(fifthFood.state.tickMs).toBe(70);
 
     const sixthFood = tick(
-      runningState({ food: { x: 9, y: 10 }, foodsEaten: 5, tickMs: 60 }),
+      runningState({ food: { x: 9, y: 10 }, foodsEaten: 5, tickMs: 70 }),
       'right',
     );
 
     expect(sixthFood.state.foodsEaten).toBe(6);
-    expect(sixthFood.state.tickMs).toBe(60);
+    expect(sixthFood.state.tickMs).toBe(70);
   });
 
   it('returns unchanged state with no score when phase is not running', () => {

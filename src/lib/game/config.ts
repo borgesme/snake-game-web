@@ -1,4 +1,4 @@
-import type { Difficulty, DifficultyConfig, Point } from './types';
+import type { Difficulty, DifficultyConfig, Point, Speed, SpeedConfig } from './types';
 
 export const BOARD_SIZE = 20;
 
@@ -26,6 +26,23 @@ export const DIFFICULTY_CONFIG: Record<Difficulty, DifficultyConfig> = {
     minTickMs: 60,
     scoreMultiplier: 2,
     obstacleCount: 10,
+  },
+};
+
+export const DEFAULT_SPEED: Speed = 'slow';
+
+export const SPEED_CONFIG: Record<Speed, SpeedConfig> = {
+  slow: {
+    initialTickMs: 220,
+    minTickMs: 90,
+  },
+  normal: {
+    initialTickMs: 150,
+    minTickMs: 70,
+  },
+  fast: {
+    initialTickMs: 110,
+    minTickMs: 55,
   },
 };
 

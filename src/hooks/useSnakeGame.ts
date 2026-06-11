@@ -19,11 +19,12 @@ export interface UseSnakeGameResult {
 
 export function useSnakeGame(): UseSnakeGameResult {
   const difficulty = useGameStore((store) => store.difficulty);
+  const speed = useGameStore((store) => store.speed);
   const addScore = useGameStore((store) => store.addScore);
   const resetScore = useGameStore((store) => store.resetScore);
   const [obstaclesEnabled, setObstaclesEnabledState] = useState(false);
   const { state, stateRef, commitState } = useCommittedState<GameState>(() =>
-    createInitialState({ difficulty, obstaclesEnabled: false }),
+    createInitialState({ difficulty, obstaclesEnabled: false, speed }),
   );
   const { requestedDirectionRef, requestDirection, resetDirection } = useDirectionQueue({
     commitState,
@@ -41,10 +42,10 @@ export function useSnakeGame(): UseSnakeGameResult {
     resetDirection();
 
     return {
-      ...createInitialState({ difficulty, obstaclesEnabled }),
+      ...createInitialState({ difficulty, obstaclesEnabled, speed }),
       phase: 'running' as const,
     };
-  }, [difficulty, obstaclesEnabled, resetDirection]);
+  }, [difficulty, obstaclesEnabled, resetDirection, speed]);
 
   useEffect(() => {
     if (stateRef.current.phase !== 'ready') {
@@ -52,8 +53,8 @@ export function useSnakeGame(): UseSnakeGameResult {
     }
 
     resetDirection();
-    commitState(createInitialState({ difficulty, obstaclesEnabled }));
-  }, [commitState, difficulty, obstaclesEnabled, resetDirection, stateRef]);
+    commitState(createInitialState({ difficulty, obstaclesEnabled, speed }));
+  }, [commitState, difficulty, obstaclesEnabled, resetDirection, speed, stateRef]);
 
   const setObstaclesEnabled = useCallback((enabled: boolean) => {
     setObstaclesEnabledState(enabled);

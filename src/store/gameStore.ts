@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import type { Difficulty } from '../lib/game/types';
+import type { Difficulty, Speed } from '../lib/game/types';
 
 const BEST_SCORE_KEY = 'snake.bestScore';
 
@@ -12,10 +12,17 @@ export const THEME_OPTIONS: Array<{ id: ThemeId; label: string }> = [
   { id: 'contrast', label: 'Contrast' },
 ];
 
+export const SPEED_OPTIONS: Array<{ id: Speed; label: string }> = [
+  { id: 'slow', label: 'Slow' },
+  { id: 'normal', label: 'Normal' },
+  { id: 'fast', label: 'Fast' },
+];
+
 const DEFAULT_THEME_ID: ThemeId = 'minimal';
 
 interface GameStoreState {
   difficulty: Difficulty;
+  speed: Speed;
   mode: ThemeMode;
   themeId: ThemeId;
   score: number;
@@ -24,6 +31,7 @@ interface GameStoreState {
 
 interface GameStoreActions {
   setDifficulty: (difficulty: Difficulty) => void;
+  setSpeed: (speed: Speed) => void;
   setMode: (mode: ThemeMode) => void;
   setThemeId: (themeId: ThemeId) => void;
   addScore: (delta: number) => void;
@@ -54,6 +62,7 @@ const writeBestScore = (bestScore: number) => {
 
 const baseState: Omit<GameStoreState, 'bestScore'> = {
   difficulty: 'normal' as const,
+  speed: 'slow' as const,
   mode: 'light' as const,
   themeId: DEFAULT_THEME_ID,
   score: 0,
@@ -63,6 +72,7 @@ export const useGameStore = create<GameStore>((set) => ({
   ...baseState,
   bestScore: readBestScore(),
   setDifficulty: (difficulty) => set({ difficulty }),
+  setSpeed: (speed) => set({ speed }),
   setMode: (mode) => set({ mode }),
   setThemeId: (themeId) => set({ themeId }),
   addScore: (delta) =>

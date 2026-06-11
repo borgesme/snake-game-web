@@ -1,18 +1,20 @@
 import {
   BOARD_SIZE,
+  DEFAULT_SPEED,
   DIFFICULTY_CONFIG,
   FOOD_SCORE,
+  SPEED_CONFIG,
   SPEEDUP_EVERY_FOODS,
   SPEEDUP_STEP_MS,
   START_SNAKE,
 } from './config';
 import type {
-  Difficulty,
   Direction,
   GameSettings,
   GameState,
   Point,
   RandomSource,
+  Speed,
   TickResult,
 } from './types';
 
@@ -32,6 +34,7 @@ const OPPOSITE_DIRECTION: Record<Direction, Direction> = {
 
 export function createInitialState(settings: GameSettings): GameState {
   const config = DIFFICULTY_CONFIG[settings.difficulty];
+  const speed = settings.speed ?? DEFAULT_SPEED;
   const random = settings.random ?? Math.random;
   const snake = clonePoints(START_SNAKE);
   const obstacles = settings.obstaclesEnabled
@@ -47,13 +50,14 @@ export function createInitialState(settings: GameSettings): GameState {
     phase: 'ready',
     boardSize: BOARD_SIZE,
     difficulty: settings.difficulty,
+    speed,
     snake,
     direction: 'right',
     nextDirection: 'right',
     food,
     obstacles,
     foodsEaten: 0,
-    tickMs: config.initialTickMs,
+    tickMs: SPEED_CONFIG[speed].initialTickMs,
   };
 }
 
@@ -107,7 +111,7 @@ export function tick(
   }
 
   const foodsEaten = ateFood ? state.foodsEaten + 1 : state.foodsEaten;
-  const tickMs = getUpdatedTickMs(state.tickMs, foodsEaten, ateFood, state.difficulty);
+  const tickMs = getUpdatedTickMs(state.tickMs, foodsEaten, ateFood, state.speed);
   const nextFood = ateFood
     ? findFreeCell([...snake, ...state.obstacles], state.boardSize, random, state.food)
     : state.food;
@@ -194,12 +198,12 @@ function getUpdatedTickMs(
   currentTickMs: number,
   foodsEaten: number,
   ateFood: boolean,
-  difficulty: Difficulty,
+  speed: Speed,
 ): number {
   if (!ateFood || foodsEaten % SPEEDUP_EVERY_FOODS !== 0) {
     return currentTickMs;
   }
 
-  const minTickMs = DIFFICULTY_CONFIG[difficulty].minTickMs;
+  const minTickMs = SPEED_CONFIG[speed].minTickMs;
   return Math.max(minTickMs, currentTickMs - SPEEDUP_STEP_MS);
 }

@@ -10,6 +10,12 @@
 
 ---
 
+## Current Status
+
+This implementation plan is archived as completed. The playable Snake SPA has been implemented, and
+follow-up optimization work from `docs/optimization-backlog-2026-06-11.md` has been applied in
+separate commits.
+
 ## Source Spec
 
 - `docs/superpowers/specs/2026-06-10-snake-game-design.md`

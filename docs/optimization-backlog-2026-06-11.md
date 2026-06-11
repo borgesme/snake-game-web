@@ -95,11 +95,11 @@ source: current-session
 
 | 状态 | 事项                                                       | 优先级 |
 | ---- | ---------------------------------------------------------- | ------ |
-| 待办 | 为食物和障碍生成加入随机策略，并保持测试可复现             | P1     |
-| 待办 | 拆分 `useSnakeGame` 内部职责，保持对外 API 不变            | P1     |
-| 待办 | 增加 App/hook 交互测试                                     | P1     |
-| 待办 | 在测试 setup 中补 Canvas 和 ResizeObserver mock            | P2     |
-| 待办 | 优化 service worker 缓存版本策略                           | P2     |
-| 待办 | 决定 `themeId` 是补 UI 能力还是移除                        | P3     |
-| 待办 | 增加 lint / format / typecheck 脚本，并接入 GitHub Actions | P2     |
-| 待办 | 更新或归档原 superpowers plan                              | P3     |
+| 完成 | 为食物和障碍生成加入随机策略，并保持测试可复现             | P1     |
+| 完成 | 拆分 `useSnakeGame` 内部职责，保持对外 API 不变            | P1     |
+| 完成 | 增加 App/hook 交互测试                                     | P1     |
+| 完成 | 在测试 setup 中补 Canvas 和 ResizeObserver mock            | P2     |
+| 完成 | 优化 service worker 缓存版本策略                           | P2     |
+| 完成 | 将 `themeId` 补成多主题 UI 能力，新增 Arcade 和 Contrast   | P3     |
+| 完成 | 增加 lint / format / typecheck 脚本，并接入 GitHub Actions | P2     |
+| 完成 | 更新或归档原 superpowers plan                              | P3     |

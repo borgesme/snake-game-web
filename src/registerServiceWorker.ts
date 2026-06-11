@@ -8,6 +8,7 @@ export function registerServiceWorker() {
       `${import.meta.env.BASE_URL}service-worker.js`,
       window.location.origin,
     );
+    serviceWorkerUrl.searchParams.set('v', __APP_VERSION__);
 
     navigator.serviceWorker.register(serviceWorkerUrl, {
       scope: import.meta.env.BASE_URL,

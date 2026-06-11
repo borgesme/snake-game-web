@@ -19,6 +19,7 @@ export interface DifficultyConfig {
 export interface GameSettings {
   difficulty: Difficulty;
   obstaclesEnabled: boolean;
+  random?: RandomSource;
 }
 
 export interface GameState {
@@ -39,3 +40,5 @@ export interface TickResult {
   ateFood: boolean;
   scoreDelta: number;
 }
+
+export type RandomSource = () => number;

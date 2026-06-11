@@ -6,7 +6,15 @@ import {
   SPEEDUP_STEP_MS,
   START_SNAKE,
 } from './config';
-import type { Difficulty, Direction, GameSettings, GameState, Point, TickResult } from './types';
+import type {
+  Difficulty,
+  Direction,
+  GameSettings,
+  GameState,
+  Point,
+  RandomSource,
+  TickResult,
+} from './types';
 
 const DIRECTION_DELTA: Record<Direction, Point> = {
   up: { x: 0, y: -1 },
@@ -24,11 +32,12 @@ const OPPOSITE_DIRECTION: Record<Direction, Direction> = {
 
 export function createInitialState(settings: GameSettings): GameState {
   const config = DIFFICULTY_CONFIG[settings.difficulty];
+  const random = settings.random ?? Math.random;
   const snake = clonePoints(START_SNAKE);
   const obstacles = settings.obstaclesEnabled
-    ? createObstacles(config.obstacleCount, snake, BOARD_SIZE)
+    ? createObstacles(config.obstacleCount, snake, BOARD_SIZE, random)
     : [];
-  const food = findFreeCell([...snake, ...obstacles], BOARD_SIZE);
+  const food = findFreeCell([...snake, ...obstacles], BOARD_SIZE, random);
 
   if (food === null) {
     throw new Error('No free cell available for initial food');
@@ -59,6 +68,7 @@ export function hasPoint(points: Point[], point: Point): boolean {
 export function tick(
   state: GameState,
   requestedDirection: Direction,
+  random: RandomSource = Math.random,
 ): TickResult {
   if (state.phase !== 'running') {
     return { state, ateFood: false, scoreDelta: 0 };
@@ -99,7 +109,7 @@ export function tick(
   const foodsEaten = ateFood ? state.foodsEaten + 1 : state.foodsEaten;
   const tickMs = getUpdatedTickMs(state.tickMs, foodsEaten, ateFood, state.difficulty);
   const nextFood = ateFood
-    ? findFreeCell([...snake, ...state.obstacles], state.boardSize, state.food)
+    ? findFreeCell([...snake, ...state.obstacles], state.boardSize, random, state.food)
     : state.food;
   const phase = nextFood === null ? 'gameOver' : state.phase;
 
@@ -127,11 +137,16 @@ function pointsEqual(left: Point, right: Point): boolean {
   return left.x === right.x && left.y === right.y;
 }
 
-function createObstacles(count: number, snake: Point[], boardSize: number): Point[] {
+function createObstacles(
+  count: number,
+  snake: Point[],
+  boardSize: number,
+  random: RandomSource,
+): Point[] {
   const obstacles: Point[] = [];
 
   for (let index = 0; index < count; index += 1) {
-    const obstacle = findFreeCell([...snake, ...obstacles], boardSize);
+    const obstacle = findFreeCell([...snake, ...obstacles], boardSize, random);
     if (obstacle === null) {
       break;
     }
@@ -142,17 +157,29 @@ function createObstacles(count: number, snake: Point[], boardSize: number): Poin
   return obstacles;
 }
 
-function findFreeCell(blocked: Point[], boardSize: number, previousFood?: Point): Point | null {
+function findFreeCell(
+  blocked: Point[],
+  boardSize: number,
+  random: RandomSource,
+  previousFood?: Point,
+): Point | null {
+  const freeCells: Point[] = [];
+
   for (let y = 0; y < boardSize; y += 1) {
     for (let x = 0; x < boardSize; x += 1) {
       const candidate = { x, y };
       if (!hasPoint(blocked, candidate) && !isPreviousFood(candidate, previousFood)) {
-        return candidate;
+        freeCells.push(candidate);
       }
     }
   }
 
-  return null;
+  if (freeCells.length === 0) {
+    return null;
+  }
+
+  const cellIndex = Math.min(freeCells.length - 1, Math.floor(random() * freeCells.length));
+  return freeCells[cellIndex];
 }
 
 function isPreviousFood(candidate: Point, previousFood?: Point): boolean {

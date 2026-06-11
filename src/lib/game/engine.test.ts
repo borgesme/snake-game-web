@@ -60,6 +60,17 @@ describe('createInitialState', () => {
     expect(state.obstacles.some((point) => hasPoint(state.snake, point))).toBe(false);
     expect(hasPoint(state.obstacles, state.food)).toBe(false);
   });
+
+  it('uses an injected random source for initial food placement', () => {
+    const state = createInitialState({
+      difficulty: 'normal',
+      obstaclesEnabled: false,
+      random: () => 0.5,
+    });
+
+    expect(state.food).not.toEqual({ x: 0, y: 0 });
+    expect(hasPoint(state.snake, state.food)).toBe(false);
+  });
 });
 
 describe('getNextDirection', () => {
@@ -94,6 +105,17 @@ describe('tick', () => {
     expect(result.state.food).not.toEqual({ x: 9, y: 10 });
     expect(hasPoint(result.state.snake, result.state.food)).toBe(false);
     expect(result.state.foodsEaten).toBe(1);
+  });
+
+  it('uses an injected random source when placing the next food after eating', () => {
+    const result = tick(
+      runningState({ food: { x: 9, y: 10 } }),
+      'right',
+      () => 0.999,
+    );
+
+    expect(result.ateFood).toBe(true);
+    expect(result.state.food).toEqual({ x: 19, y: 19 });
   });
 
   it('sets gameOver on wall collision', () => {

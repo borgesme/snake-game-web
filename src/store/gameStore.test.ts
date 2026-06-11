@@ -25,10 +25,10 @@ describe('gameStore', () => {
     const { useGameStore } = await loadStore();
 
     useGameStore.getState().setMode('dark');
-    useGameStore.getState().setThemeId('minimal');
+    useGameStore.getState().setThemeId('arcade');
 
     expect(useGameStore.getState().mode).toBe('dark');
-    expect(useGameStore.getState().themeId).toBe('minimal');
+    expect(useGameStore.getState().themeId).toBe('arcade');
   });
 
   it('hydrates best score from localStorage when the store loads', async () => {

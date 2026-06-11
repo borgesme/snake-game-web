@@ -6,7 +6,7 @@ import { StatusOverlay } from './components/StatusOverlay';
 import { TouchControls } from './components/TouchControls';
 import { useSnakeGame } from './hooks/useSnakeGame';
 import type { Difficulty, Direction, GameState } from './lib/game/types';
-import { useGameStore, type ThemeMode } from './store/gameStore';
+import { useGameStore, type ThemeId, type ThemeMode } from './store/gameStore';
 
 const phaseLabels = {
   ready: 'Ready',
@@ -18,15 +18,18 @@ const phaseLabels = {
 export default function App() {
   const difficulty = useGameStore((store) => store.difficulty);
   const mode = useGameStore((store) => store.mode);
+  const themeId = useGameStore((store) => store.themeId);
   const score = useGameStore((store) => store.score);
   const bestScore = useGameStore((store) => store.bestScore);
   const setDifficulty = useGameStore((store) => store.setDifficulty);
   const setMode = useGameStore((store) => store.setMode);
+  const setThemeId = useGameStore((store) => store.setThemeId);
   const game = useSnakeGame();
 
   useEffect(() => {
     document.documentElement.dataset.mode = mode;
-  }, [mode]);
+    document.documentElement.dataset.theme = themeId;
+  }, [mode, themeId]);
 
   return (
     <main className="min-h-dvh overflow-x-hidden bg-[var(--color-bg)] text-[var(--color-text)]">
@@ -52,11 +55,13 @@ export default function App() {
             bestScore={bestScore}
             difficulty={difficulty}
             mode={mode}
+            themeId={themeId}
             obstaclesEnabled={game.obstaclesEnabled}
             phase={game.state.phase}
             score={score}
             onDifficultyChange={setDifficulty}
             onModeChange={setMode}
+            onThemeIdChange={setThemeId}
             onObstaclesChange={game.setObstaclesEnabled}
             onPause={game.pause}
             onRestart={game.restart}
@@ -167,11 +172,13 @@ interface SidePanelProps {
   className?: string;
   difficulty: Difficulty;
   mode: ThemeMode;
+  themeId: ThemeId;
   obstaclesEnabled: boolean;
   phase: GameState['phase'];
   score: number;
   onDifficultyChange: (difficulty: Difficulty) => void;
   onModeChange: (mode: ThemeMode) => void;
+  onThemeIdChange: (themeId: ThemeId) => void;
   onObstaclesChange: (enabled: boolean) => void;
   onPause: () => void;
   onRestart: () => void;
@@ -184,11 +191,13 @@ function SidePanel({
   className = '',
   difficulty,
   mode,
+  themeId,
   obstaclesEnabled,
   phase,
   score,
   onDifficultyChange,
   onModeChange,
+  onThemeIdChange,
   onObstaclesChange,
   onPause,
   onRestart,
@@ -201,10 +210,12 @@ function SidePanel({
       <ControlPanel
         difficulty={difficulty}
         mode={mode}
+        themeId={themeId}
         obstaclesEnabled={obstaclesEnabled}
         phase={phase}
         onDifficultyChange={onDifficultyChange}
         onModeChange={onModeChange}
+        onThemeIdChange={onThemeIdChange}
         onObstaclesChange={onObstaclesChange}
         onPause={onPause}
         onRestart={onRestart}

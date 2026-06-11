@@ -4,7 +4,13 @@ import type { Difficulty } from '../lib/game/types';
 const BEST_SCORE_KEY = 'snake.bestScore';
 
 export type ThemeMode = 'light' | 'dark';
-export type ThemeId = 'minimal';
+export type ThemeId = 'minimal' | 'arcade' | 'contrast';
+
+export const THEME_OPTIONS: Array<{ id: ThemeId; label: string }> = [
+  { id: 'minimal', label: 'Minimal' },
+  { id: 'arcade', label: 'Arcade' },
+  { id: 'contrast', label: 'Contrast' },
+];
 
 const DEFAULT_THEME_ID: ThemeId = 'minimal';
 

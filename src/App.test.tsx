@@ -8,6 +8,7 @@ describe('App', () => {
     window.localStorage.clear();
     useGameStore.getState().resetAll();
     document.documentElement.removeAttribute('data-mode');
+    document.documentElement.removeAttribute('data-theme');
   });
 
   it('renders the game heading', () => {
@@ -49,12 +50,15 @@ describe('App', () => {
     render(<App />);
 
     fireEvent.change(screen.getByLabelText('Difficulty'), { target: { value: 'hard' } });
+    fireEvent.change(screen.getByLabelText('Theme'), { target: { value: 'arcade' } });
     fireEvent.click(screen.getByLabelText('Obstacles'));
     fireEvent.click(screen.getByRole('button', { name: 'Light' }));
 
     expect(screen.getByText('Ready / hard')).toBeInTheDocument();
+    expect(screen.getByLabelText('Theme')).toHaveValue('arcade');
     expect(screen.getByLabelText('Obstacles')).toBeChecked();
     expect(document.documentElement.dataset.mode).toBe('dark');
+    expect(document.documentElement.dataset.theme).toBe('arcade');
     expect(screen.getByRole('button', { name: 'Dark' })).toHaveAttribute('aria-pressed', 'true');
   });
 });

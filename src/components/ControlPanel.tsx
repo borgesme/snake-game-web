@@ -1,12 +1,15 @@
 import type { Difficulty, GamePhase } from '../lib/game/types';
+import { THEME_OPTIONS, type ThemeId } from '../store/gameStore';
 
 interface ControlPanelProps {
   difficulty: Difficulty;
   mode: 'light' | 'dark';
+  themeId: ThemeId;
   phase: GamePhase;
   obstaclesEnabled: boolean;
   onDifficultyChange: (difficulty: Difficulty) => void;
   onModeChange: (mode: 'light' | 'dark') => void;
+  onThemeIdChange: (themeId: ThemeId) => void;
   onObstaclesChange: (enabled: boolean) => void;
   onStart: () => void;
   onPause: () => void;
@@ -23,10 +26,12 @@ const quietButtonClass = `${buttonClass} bg-[var(--color-surface)] text-[var(--c
 export function ControlPanel({
   difficulty,
   mode,
+  themeId,
   phase,
   obstaclesEnabled,
   onDifficultyChange,
   onModeChange,
+  onThemeIdChange,
   onObstaclesChange,
   onStart,
   onPause,
@@ -53,6 +58,21 @@ export function ControlPanel({
             <option value="easy">Easy</option>
             <option value="normal">Normal</option>
             <option value="hard">Hard</option>
+          </select>
+        </label>
+
+        <label className="flex min-w-0 flex-col gap-1 text-sm text-[var(--color-text-muted)]">
+          Theme
+          <select
+            className="h-10 min-w-0 rounded-md border border-[var(--color-grid)] bg-[var(--color-bg)] px-3 text-[var(--color-text)] disabled:opacity-45"
+            value={themeId}
+            onChange={(event) => onThemeIdChange(event.target.value as ThemeId)}
+          >
+            {THEME_OPTIONS.map((theme) => (
+              <option key={theme.id} value={theme.id}>
+                {theme.label}
+              </option>
+            ))}
           </select>
         </label>
 

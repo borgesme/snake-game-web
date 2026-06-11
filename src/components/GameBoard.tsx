@@ -66,7 +66,7 @@ export function GameBoard({ state, mode, onDirection }: GameBoardProps) {
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
-      if (isFormTarget(event.target)) {
+      if (isTextInputTarget(event.target)) {
         return;
       }
 
@@ -156,9 +156,6 @@ function cssVariable(styles: CSSStyleDeclaration, name: string, fallback: string
   return styles.getPropertyValue(name).trim() || fallback;
 }
 
-function isFormTarget(target: EventTarget | null) {
-  return (
-    target instanceof HTMLElement &&
-    ['BUTTON', 'INPUT', 'SELECT', 'TEXTAREA'].includes(target.tagName)
-  );
+function isTextInputTarget(target: EventTarget | null) {
+  return target instanceof HTMLElement && ['INPUT', 'SELECT', 'TEXTAREA'].includes(target.tagName);
 }
